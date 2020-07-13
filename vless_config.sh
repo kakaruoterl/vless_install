@@ -21,6 +21,8 @@ vless_download() {
 	unzip v2ray-linux-64.zip
 	mv /usr/bin/v2ray/* /opt
 	cp -r * /usr/bin/v2ray/
+	chmod +x /usr/bin/v2ray/v2ray
+	chmod +x /usr/bin/v2ray/v2ctl
 	cd /root/
 }
 
@@ -102,6 +104,7 @@ case "$choice" in
 	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
 	systemctl restart v2ray
 	systemctl restart nginx
+	systemctl restart haproxy
 	clear
 	uprint
 	;;
@@ -110,7 +113,6 @@ case "$choice" in
 	change_json
 	acme_install
 	apt install nginx -y
-	haproxy_install
 	cp /root/vless/ws.json /etc/v2ray/config.json
 	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
 	systemctl restart v2ray
@@ -121,16 +123,17 @@ case "$choice" in
 	;;
 4)
 	v2ray_install
-        change_json
+    change_json
 	acme_install
-        apt install nginx -y
+    apt install nginx -y
 	haproxy_install
 	cp /root/vless/tcp.json /etc/v2ray/config.json
-        cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
-        systemctl restart v2ray
-        systemctl restart nginx
-        clear
-        uprint
+    cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+    systemctl restart v2ray
+    systemctl restart nginx
+	systemctl restart haproxy
+    clear
+    uprint
 	;;
 *)
 	echo "error"
