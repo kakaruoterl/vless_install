@@ -1,4 +1,10 @@
 #! /bin/bash
+
+mkdir /root/vless
+mv /root/ws* /root/vless
+mv /root/tcp* /root/vless
+mv /root/hap* /root/vless
+
 v2ray_install() {
 	timedatectl set-timezone Asia/Shanghai 
 	wget https://install.direct/go.sh
@@ -10,12 +16,8 @@ v2ray_install() {
 uuid1=`cat /proc/sys/kernel/random/uuid` &>/dev/null
 
 vless_download() {
-	mkdir /root/vless
-	mv /root/ws* /root/vless
-	mv /root/tcp* /root/vless
-	mv /root/hap* /root/vless
 	cd vless
-	wget https://github.com/rprx/v2ray-vless/releases/download/beta/v2ray-linux-64.zip
+	wget https://github.com/rprx/v2ray-vless/releases/download/clean2/v2ray-linux-64.zip
 	unzip v2ray-linux-64.zip
 	mv /usr/bin/v2ray/* /opt
 	cp -r * /usr/bin/v2ray/
@@ -27,6 +29,8 @@ read -p "请输入您绑定的域名(请检查清楚！如输入有误，请在�
 change_json() {
 	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/ws.json
 	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/tcp.json
+	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/wsv.json
+	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/tcpv.json 
 	sed -i 's/example.com/'$dname'/g' /root/vless/tcp.conf
 	sed -i 's/example.com/'$dname'/g' /root/vless/ws.conf
 }
@@ -81,8 +85,7 @@ case "$choice" in
 	acme_install
 	apt install nginx -y
 	yum install nginx -y
-	sed -i 's/vmess/vless/g' /root/vless/ws.json
-	cp /root/vless/ws.json /etc/v2ray/config.json
+	cp /root/vless/wsv.json /etc/v2ray/config.json
 	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
 	systemctl restart v2ray
 	systemctl restart nginx
@@ -96,10 +99,9 @@ case "$choice" in
 	change_json
 	acme_install
 	apt install nginx -y
-        yum install nginx -y
+    yum install nginx -y
 	haproxy_install
-	sed -i 's/vmess/vless/g' /root/vless/tcp.json
-	cp /root/vless/tcp.json /etc/v2ray/config.json
+	cp /root/vless/tcpv.json /etc/v2ray/config.json
 	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
 	systemctl restart v2ray
 	systemctl restart nginx

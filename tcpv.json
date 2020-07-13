@@ -1,0 +1,26 @@
+{
+    "inbounds": [
+        {
+            "protocol": "vless",
+            "listen": "127.0.0.1",
+            "port": 40001,
+            "settings": {
+                "clients": [
+                    {
+                        "id": "f2435e5c-9ad9-4367-836a-8341117d0a5f",
+                        "level": 0
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "tcp"
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom"
+        }
+    ]
+}
