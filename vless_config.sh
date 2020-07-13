@@ -28,9 +28,9 @@ read -p "请输入您绑定的域名(请检查清楚！如输入有误，请在�
 
 change_json() {
 	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/ws.json
-	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/tcp.json
-	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/wsv.json
-	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/tcpv.json 
+	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /root/vless/tcp.json
+	sed -ri '10s/.*/              "id":"'$uuid1'",/' /root/vless/wsv.json
+	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /root/vless/tcpv.json 
 	sed -i 's/example.com/'$dname'/g' /root/vless/tcp.conf
 	sed -i 's/example.com/'$dname'/g' /root/vless/ws.conf
 }
@@ -51,7 +51,6 @@ acme_install() {
 
 haproxy_install() {
 	apt install haproxy -y
-	yum install haproxy -y
 	rm -rf /etc/haproxy/haproxy.cfg
 	sed -i 's/example.com/v2ray/g' /root/vless/haproxy.cfg
 	cp /root/vless/haproxy.cfg /etc/haproxy/haproxy.cfg
@@ -84,7 +83,6 @@ case "$choice" in
 	change_json
 	acme_install
 	apt install nginx -y
-	yum install nginx -y
 	cp /root/vless/wsv.json /etc/v2ray/config.json
 	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
 	systemctl restart v2ray
@@ -99,7 +97,6 @@ case "$choice" in
 	change_json
 	acme_install
 	apt install nginx -y
-    yum install nginx -y
 	haproxy_install
 	cp /root/vless/tcpv.json /etc/v2ray/config.json
 	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
@@ -113,7 +110,6 @@ case "$choice" in
 	change_json
 	acme_install
 	apt install nginx -y
-	yum install nginx -y
 	haproxy_install
 	cp /root/vless/ws.json /etc/v2ray/config.json
 	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
@@ -128,7 +124,6 @@ case "$choice" in
         change_json
 	acme_install
         apt install nginx -y
-        yum install nginx -y
 	haproxy_install
 	cp /root/vless/tcp.json /etc/v2ray/config.json
         cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
