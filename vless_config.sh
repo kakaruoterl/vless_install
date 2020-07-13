@@ -11,6 +11,9 @@ uuid1=`cat /proc/sys/kernel/random/uuid` &>/dev/null
 
 vless_download() {
 	mkdir /root/vless
+	mv /root/ws* /root/vless
+	mv /root/tcp* /root/vless
+	mv /root/hap* /root/vless
 	cd vless
 	wget https://github.com/rprx/v2ray-vless/releases/download/beta/v2ray-linux-64.zip
 	unzip v2ray-linux-64.zip
