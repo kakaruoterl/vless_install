@@ -26,7 +26,7 @@ vless_download() {
 	cd /root/
 }
 
-read -p "请输入您绑定的域名(请检查清楚！如输入有误，请在安装完成后在/etc/nginx/conf.d/文件夹中修改配置文件)": dname
+
 
 change_json() {
 	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/ws.json
@@ -58,6 +58,20 @@ haproxy_install() {
 	cp /root/vless/haproxy.cfg /etc/haproxy/haproxy.cfg
 }
 
+delete() {
+	rm -rf /root/vless
+	rm -rf /root/vless.zip
+	rm -rf /root/html-p.zip
+	rm -rf /root/432
+}
+
+html_install() {
+	wget https://raw.githubusercontent.com/kakaruoterl/vless_install/master/html-p.zip
+	unzip html-p.zip
+	rm -rf /var/www/html/*
+	cp -r /root/432/* /var/www/html/
+}
+
 uprint() {
 	echo ""
 	echo "你的uuid为：$uuid1"
@@ -77,6 +91,7 @@ cat <<-EOF
             ############################
 EOF
 
+read -p "请输入您绑定的域名(务必输入正确！)": dname
 read -p "请输入您的选择:" choice
 case "$choice" in
 1)
@@ -87,8 +102,10 @@ case "$choice" in
 	apt install nginx -y
 	cp /root/vless/wsv.json /etc/v2ray/config.json
 	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
+	html_install
 	systemctl restart v2ray
 	systemctl restart nginx
+	delete
 	clear
 	uprint
 	pathprint
@@ -102,9 +119,11 @@ case "$choice" in
 	haproxy_install
 	cp /root/vless/tcpv.json /etc/v2ray/config.json
 	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	html_install
 	systemctl restart v2ray
 	systemctl restart nginx
 	systemctl restart haproxy
+	delete
 	clear
 	uprint
 	;;
@@ -115,10 +134,12 @@ case "$choice" in
 	apt install nginx -y
 	cp /root/vless/ws.json /etc/v2ray/config.json
 	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
+	html_install
 	systemctl restart v2ray
 	systemctl restart nginx
 	clear
-        uprint
+    delete
+	uprint
 	pathprint
 	;;
 4)
@@ -129,10 +150,12 @@ case "$choice" in
 	haproxy_install
 	cp /root/vless/tcp.json /etc/v2ray/config.json
     cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	html_install
     systemctl restart v2ray
     systemctl restart nginx
 	systemctl restart haproxy
-    clear
+    delete
+	clear
     uprint
 	;;
 *)
