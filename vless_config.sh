@@ -30,6 +30,7 @@ vless_download() {
 }
 
 trojan_install() {
+	read -p "请输入trojan密码:" password1
 	mkdir /etc/v2ray
 	cd /etc/
 	wget https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.xz
@@ -40,7 +41,6 @@ trojan_install() {
 	rm -rf /etc/trojan/config.json
 	cd
 	mv /root/vless/trojan.service /etc/systemd/system/trojan.service
-	read -p "请输入trojan密码:" password1
 	sed -i 's/passwd/'$password1'/g' /root/vless/trojan.json
 	cp /root/vless/trojan.json /etc/trojan/
 }
