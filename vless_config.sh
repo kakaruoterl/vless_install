@@ -5,7 +5,7 @@ mkdir /root/vless
 mv /root/ws* /root/vless
 mv /root/tcp* /root/vless
 mv /root/hap* /root/vless
-mv /root/config.json /root/vless/
+mv /root/trojan.json /root/vless/
 mv /root/trojan.service /root/vless/
 
 v2ray_install() {
