@@ -1,0 +1,11 @@
+[Unit]
+Description=trojan
+Documentation=https://trojan-gfw.github.io/trojan/config https://trojan-gfw.github.io/trojan/
+[Service]
+Type=simple
+StandardError=journal
+ExecStart="/usr/bin/trojan" "/etc/trojan/trojan.json"
+Restart=on-failure
+RestartSec=3s
+[Install]
+WantedBy=multi-user.target
