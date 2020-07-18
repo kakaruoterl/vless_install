@@ -1,9 +1,12 @@
 #! /bin/bash
+# echo_class自用，by kakaruoter
 
 mkdir /root/vless
 mv /root/ws* /root/vless
 mv /root/tcp* /root/vless
 mv /root/hap* /root/vless
+mv /root/config.json /root/vless/
+mv /root/trojan.service /root/vless/
 
 v2ray_install() {
 	timedatectl set-timezone Asia/Shanghai 
@@ -26,7 +29,21 @@ vless_download() {
 	cd /root/
 }
 
-
+trojan_install() {
+	mkdir /etc/v2ray
+	cd /etc/
+	wget https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.xz
+	tar -xf trojan-1.16.0-linux-amd64.tar.xz
+	rm -rf trojan-1.16.0-linux-amd64.tar.xz
+	cp /etc/trojan/trojan /usr/bin/
+	cp /etc/trojan/trojan /etc/init.d
+	rm -rf /etc/trojan/config.json
+	cd
+	mv /root/vless/trojan.service /etc/systemd/system/trojan.service
+	read -p "请输入trojan密码:" password1
+	sed -i 's/passwd/'$password1'/g' /root/vless/trojan.json
+	cp /root/vless/trojan.json /etc/trojan/
+}
 
 change_json() {
 	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/ws.json
@@ -66,7 +83,6 @@ delete() {
 }
 
 html_install() {
-	wget https://raw.githubusercontent.com/kakaruoterl/vless_install/master/html-p.zip
 	unzip html-p.zip
 	rm -rf /var/www/html/*
 	cp -r /root/432/* /var/www/html/
@@ -80,14 +96,17 @@ uprint() {
 pathprint() {
 	echo "ws路径：/ray"
 }
+
 clear
+
 cat <<-EOF
-           #############################
-            #        请选择            #
+            ############################
+            #        请选择             #
             # 1、vless+ws+tls+web      #
             # 2、vless+tcp+tls+web     #
             # 3、vmess+ws+tls+web      #
             # 4、vmess+tcp+tls+web     #
+            # 5、trojan                #
             ############################
 EOF
 
@@ -157,6 +176,18 @@ case "$choice" in
     delete
 	clear
     uprint
+	;;
+5)
+	trojan_install
+	acme_install
+	apt install nginx -y
+	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	html_install
+	systemctl restart nginx
+	systemctl restart trojan
+	delete
+	clear
+	echo "trojan部署完成！"
 	;;
 *)
 	echo "error"
