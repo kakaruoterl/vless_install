@@ -5,6 +5,7 @@ vless_install
 
 debian10支持，ubuntu20.04支持，centos不支持，懒……，只是为了方便自己使用
 安装:
+
 apt install wget unzip -y
 
 wget https://raw.githubusercontent.com/kakaruoterl/vless_install/master/vless.zip
