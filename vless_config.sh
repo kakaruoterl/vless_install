@@ -249,6 +249,7 @@ case "$choice" in
 5)
 	install_all
 	trojan_install
+	change_json
 	acme_install
 	nginx_install
 	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
