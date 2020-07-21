@@ -268,7 +268,7 @@ case "$choice" in
 	systemctl restart trojan
 	delete
 	clear
-	echo "${greed_font_prefix}trojan部署完成！"
+	echo -e "${Greed_font_prefix}trojan部署完成！${Font_color_suffix}"
 	;;
 6)
 	bbr_install
