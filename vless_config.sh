@@ -45,16 +45,16 @@ checkIP() {
 install_all() {
 	while true; do
 	read -p "请输入您绑定到本vps的域名:" dname
-    echo "域名解析中..."
-    checkIP
-    if checkIP "${dname}"; then
-    	  echo "解析正确, 即将开始安装"
-      	break
-    else
-      	echo "解析错误，请重新输入!"
-      	continue
-    fi
-  done
+	echo "域名解析中..."
+	checkIP
+	if checkIP "${dname}"; then
+		echo "解析正确, 即将开始安装"
+		break
+	else
+		echo "解析错误，请重新输入!"
+		continue
+	fi
+	done
 }
 
 
@@ -108,6 +108,12 @@ haproxy_install() {
 	cp /root/vless/haproxy.cfg /etc/haproxy/haproxy.cfg
 }
 
+bbr_install() {
+	wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
+	chmod +x tcp.sh
+	./tcp.sh
+}
+
 delete() {
 	rm -rf /root/vless
 	rm -rf /root/vless.zip
@@ -131,14 +137,14 @@ pathprint() {
 }
 
 nginx_install() {
-        if [ ! -d /etc/nginx ];then
-                apt install nginx -y
-        fi
+		if [ ! -d /etc/nginx ];then
+				apt install nginx -y
+		fi
 		rm -rf /etc/nginx/conf.d/*
 }
 
 delete_all() {
-	read -p "请确定(y/n):" yn
+	read -p "将会删除证书文件以外的其它科学上网程序，请确定(y/n):" yn
 	case "$yn" in
 	[yY])
 		rm -rf /etc/v2ray/config.json &>/dev/null
@@ -163,14 +169,15 @@ clear
 
 cat <<-EOF
             ############################
-            #        请选择：           #
+            #    please choose：       #
             # 1、vless+ws+tls+web      #
             # 2、vless+tcp+tls+web     #
             # 3、vmess+ws+tls+web      #
             # 4、vmess+tcp+tls+web     #
             # 5、trojan                #
-            # 6、清空所有已安装程序       #
-            # 7、exit                  #
+			# 6、bbr install
+            # 7、delete all            #
+            # 8、exit                  #
             ############################
 EOF
 
@@ -225,26 +232,26 @@ case "$choice" in
 	systemctl restart v2ray
 	systemctl restart nginx
 	clear
-    delete
+	delete
 	uprint
 	pathprint
 	;;
 4)
 	install_all
 	v2ray_install
-    change_json
+	change_json
 	acme_install
-    nginx_install
+	nginx_install
 	haproxy_install
 	cp /root/vless/tcp.json /etc/v2ray/config.json
-    cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
 	html_install
-    systemctl restart v2ray
-    systemctl restart nginx
+	systemctl restart v2ray
+	systemctl restart nginx
 	systemctl restart haproxy
-    delete
+	delete
 	clear
-    uprint
+	uprint
 	;;
 5)
 	install_all
@@ -261,9 +268,12 @@ case "$choice" in
 	echo "trojan部署完成！"
 	;;
 6)
-	delete_all
+	bbr_install
 	;;
 7)
+	delete_all
+	;;
+8)
 	exit
 	;;
 *)
