@@ -1,6 +1,9 @@
 #! /bin/bash
 # echo_class自用，by kakaruoter
 
+Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
+
+
 mkdir /root/vless
 mv /root/ws* /root/vless
 mv /root/tcp* /root/vless
@@ -45,13 +48,13 @@ checkIP() {
 install_all() {
 	while true; do
 	read -p "请输入您绑定到本vps的域名:" dname
-	echo "域名解析中..."
+	echo "${Green_font_prefix}域名解析中...${Font_color_suffix}"
 	checkIP
 	if checkIP "${dname}"; then
-		echo "解析正确, 即将开始安装"
+		echo -e "${Green_font_prefix}解析正确, 即将开始安装${Font_color_suffix}"
 		break
 	else
-		echo "解析错误，请重新输入!"
+		echo -e "${Red_font_prefix}解析错误，请重新输入!${Font_color_suffix}"
 		continue
 	fi
 	done
@@ -129,11 +132,11 @@ html_install() {
 
 uprint() {
 	echo ""
-	echo "你的uuid为：$uuid1"
+	echo -e "${Green_font_prefix}你的uuid为：$uuid1${Font_color_suffix}"
 }
 
 pathprint() {
-	echo "ws路径：/ray"
+	echo -e "${Green_font_prefix}ws路径：/ray${Font_color_suffix}"
 }
 
 nginx_install() {
@@ -160,29 +163,29 @@ delete_all() {
 		exit
 		;;
 	*)
-		echo "error"
+		echo -e "${red_font_prefix}error${Font_color_suffix}"
 		exit
 	esac
 }
 
 clear
 
-cat <<-EOF
-            ############################
-            #    please choose：       #
-            # 1、vless+ws+tls+web      #
-            # 2、vless+tcp+tls+web     #
-            # 3、vmess+ws+tls+web      #
-            # 4、vmess+tcp+tls+web     #
-            # 5、trojan                #
-            # 6、bbr install           #
-            # 7、delete all            #
-            # 8、exit                  #
-            ############################
-EOF
-
+echo && echo -e "          科学上网一键安装脚本：       
+         ${Green_font_prefix}----  by echo_class ----${Font_color_suffix}
+      ——————————————————————————————————
+             ${Green_font_prefix}1、${Font_color_suffix}vless+ws+tls+web
+             ${Green_font_prefix}2、${Font_color_suffix}vless+tcp+tls+web
+             ${Green_font_prefix}3、${Font_color_suffix}vmess+ws+tls+web
+             ${Green_font_prefix}4、${Font_color_suffix}vmess+tcp+tls+web
+             ${Green_font_prefix}5、${Font_color_suffix}trojan
+             ${Green_font_prefix}6、${Font_color_suffix}bbr install           
+             ${Green_font_prefix}7、${Font_color_suffix}delete all
+             ${Green_font_prefix}8、${Font_color_suffix}exit
+      ——————————————————————————————————
+         ${Green_font_prefix}该脚本会自动安装伪装网站${Font_color_suffix}"
 #read -p "请输入您绑定的域名(务必输入正确！)": dname
 #install_all
+echo
 read -p "请输入您的选择:" choice
 case "$choice" in
 1)
@@ -265,7 +268,7 @@ case "$choice" in
 	systemctl restart trojan
 	delete
 	clear
-	echo "trojan部署完成！"
+	echo "${greed_font_prefix}trojan部署完成！"
 	;;
 6)
 	bbr_install
@@ -277,6 +280,6 @@ case "$choice" in
 	exit
 	;;
 *)
-	echo "error"
+	echo -e "${Red_background_prefix}error${Font_color_suffix}"
 	exit
 esac
