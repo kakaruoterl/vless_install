@@ -175,7 +175,7 @@ cat <<-EOF
             # 3、vmess+ws+tls+web      #
             # 4、vmess+tcp+tls+web     #
             # 5、trojan                #
-			# 6、bbr install
+            # 6、bbr install           #
             # 7、delete all            #
             # 8、exit                  #
             ############################
