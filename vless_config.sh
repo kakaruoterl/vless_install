@@ -5,18 +5,21 @@ Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_p
 
 
 mkdir /root/vless
-mv /root/ws* /root/vless
-mv /root/tcp* /root/vless
-mv /root/hap* /root/vless
-mv /root/trojan.json /root/vless/
-mv /root/trojan.service /root/vless/
+mv /root/ws* /root/vless &>/dev/null
+mv /root/tcp* /root/vless &>/dev/null
+mv /root/hap* /root/vless &>/dev/null
+mv /root/trojan.json /root/vless/ &>/dev/null
+mv /root/trojan.service /root/vless/ &>/dev/null
 
 v2ray_install() {
-	timedatectl set-timezone Asia/Shanghai 
-	wget https://install.direct/go.sh
-	chmod +x go.sh
-	./go.sh &>/dev/null
+	if [ ! -d /usr/bin/v2ray ];then
+		timedatectl set-timezone Asia/Shanghai 
+		wget https://install.direct/go.sh
+		chmod +x go.sh
+		./go.sh &>/dev/null
+	fi
 	rm -rf /etc/v2ray/config.json
+	uuid1=`cat /proc/sys/kernel/random/uuid` &>/dev/null
 }
 
 uuid1=`cat /proc/sys/kernel/random/uuid` &>/dev/null
@@ -48,7 +51,7 @@ checkIP() {
 install_all() {
 	while true; do
 	read -p "请输入您绑定到本vps的域名:" dname
-	echo "${Green_font_prefix}域名解析中...${Font_color_suffix}"
+	echo -e "${Green_font_prefix}域名解析中...${Font_color_suffix}"
 	checkIP
 	if checkIP "${dname}"; then
 		echo -e "${Green_font_prefix}解析正确, 即将开始安装${Font_color_suffix}"
