@@ -82,7 +82,7 @@ trojan_install() {
 
 change_json() {
 	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/ws.json
-	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /root/vless/tcp.json
+	sed -ri '10s/.*/                        "id":"'$uuid1'"/' /root/vless/tcp.json
 	sed -ri '10s/.*/              "id":"'$uuid1'",/' /root/vless/wsv.json
 	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /root/vless/tcpv.json 
 	sed -i 's/example.com/'$dname'/g' /root/vless/tcp.conf
