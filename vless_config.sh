@@ -165,6 +165,10 @@ nginx_install() {
 				apt install nginx -y
 		fi
 		rm -rf /etc/nginx/conf.d/*
+		systemctl stop caddy
+		systemctl disable caddy
+		systemctl stop httpd
+		systemctl disable httpd
 }
 
 delete_all() {
