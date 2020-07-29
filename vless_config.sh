@@ -90,16 +90,34 @@ change_json() {
 }
 
 acme_install() {
-	if [ ! -d /root/.acme.sh ];then
+	if [ ! -f /root/.acme.sh/${dname}_ecc/fullchain.cer ];then
 		apt-get install openssl cron socat curl -y	
 		curl  https://get.acme.sh | sh
 		~/.acme.sh/acme.sh --issue -d $dname --standalone --keylength ec-256 --force
 		~/.acme.sh/acme.sh --installcert -d $dname --ecc \
                           	--fullchain-file /etc/v2ray/v2ray.crt \
                           	--key-file /etc/v2ray/v2ray.key
-		mkdir /etc/ssl/private
-		cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem
+		
+	else
+		if [ ! -f /etc/v2ray/v2ray.crt ];then
+			rm -rf /etc/v2ray/*.crt
+			rm -rf /etc/v2ray/*.key
+			cd /root/.acme.sh/${dname}_ecc
+			cp fullchain.cer /etc/v2ray/v2ray.crt
+			cp $dname.key /etc/v2ray/v2ray.key
+		fi
 	fi
+
+	if [ -d /var/www/.caddy/acme ];then
+		rm -rf /etc/v2ray/v2ray.crt
+		rm -rf /etc/v2ray/v2ray.key
+		cd /var/www/.caddy/acme/acme-v02.api.letsencrypt.org/sites/$dname
+		cp $dname.crt /etc/v2ray/v2ray.crt
+		cp $dname.key /etc/v2ray/v2ray.key
+		cd
+	fi
+	mkdir /etc/ssl/private
+	cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem
 }
 #vless_ws() {
 #	cp ws.json /etc/v2ray/config.json
