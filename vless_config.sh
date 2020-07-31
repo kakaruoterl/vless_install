@@ -3,13 +3,20 @@
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 
-
-mkdir /root/vless
-mv /root/ws* /root/vless &>/dev/null
-mv /root/tcp* /root/vless &>/dev/null
-mv /root/hap* /root/vless &>/dev/null
-mv /root/trojan.json /root/vless/ &>/dev/null
-mv /root/trojan.service /root/vless/ &>/dev/null
+if [ ! -d /opt/vless ];then
+	mkdir /opt/vless
+fi
+if [ ! -d /root/432 ];then
+	unzip html-p.zip
+fi
+mv /root/ws* /opt/vless &>/dev/null
+mv /root/tcp.conf /opt/vless &>/dev/null
+mv /root/tcp.json /opt/vless &>/dev/null
+mv /root/tcpv.json /opt/vless &>/dev/null
+mv /root/hap* /opt/vless &>/dev/null
+mv /root/trojan.json /opt/vless/ &>/dev/null
+mv /root/trojan.service /opt/vless/ &>/dev/null
+mv /root/432 /opt/vless
 
 v2ray_install() {
 	if [ ! -d /usr/bin/v2ray ];then
@@ -25,14 +32,14 @@ v2ray_install() {
 uuid1=`cat /proc/sys/kernel/random/uuid` &>/dev/null
 
 vless_download() {
-	cd vless
+	mv /usr/bin/v2ray/* /opt
+	cd /usr/bin/v2ray
 	wget https://github.com/rprx/v2ray-vless/releases/download/clean2/v2ray-linux-64.zip
 	unzip v2ray-linux-64.zip
-	mv /usr/bin/v2ray/* /opt
-	cp -r * /usr/bin/v2ray/
+	rm -rf v2ray-linux-64.zip
 	chmod +x /usr/bin/v2ray/v2ray
 	chmod +x /usr/bin/v2ray/v2ctl
-	cd /root/
+	cd
 }
 
 checkIP() {
@@ -75,18 +82,18 @@ trojan_install() {
 	cp /etc/trojan/trojan /etc/init.d
 	rm -rf /etc/trojan/config.json
 	cd
-	mv /root/vless/trojan.service /etc/systemd/system/trojan.service
-	sed -i 's/passwd/'$password1'/g' /root/vless/trojan.json
-	cp /root/vless/trojan.json /etc/trojan/
+	cp /opt/vless/trojan.service /etc/systemd/system/trojan.service
+#	sed -i 's/passwd/'$password1'/g' /opt/vless/trojan.json
+	cp /opt/vless/trojan.json /etc/trojan/
 }
 
 change_json() {
-	sed -ri '10s/.*/            "id":"'$uuid1'",/' /root/vless/ws.json
-	sed -ri '10s/.*/                        "id":"'$uuid1'"/' /root/vless/tcp.json
-	sed -ri '10s/.*/              "id":"'$uuid1'",/' /root/vless/wsv.json
-	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /root/vless/tcpv.json 
-	sed -i 's/example.com/'$dname'/g' /root/vless/tcp.conf
-	sed -i 's/example.com/'$dname'/g' /root/vless/ws.conf
+	sed -ri '10s/.*/            "id":"'$uuid1'",/' /opt/vless/ws.json
+	sed -ri '10s/.*/                        "id":"'$uuid1'"/' /opt/vless/tcp.json
+	sed -ri '10s/.*/              "id":"'$uuid1'",/' /opt/vless/wsv.json
+	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /opt/vless/tcpv.json 
+	sed -i 's/example.com/'$dname'/g' /opt/vless/tcp.conf
+	sed -i 's/example.com/'$dname'/g' /opt/vless/ws.conf
 }
 
 acme_install() {
@@ -124,12 +131,12 @@ acme_install() {
 #}
 
 haproxy_install() {
-	if [ ! -d /etc/haproxy ];then
+	if [ ! -f /etc/haproxy/haproxy.cfg ];then
 		apt install haproxy -y
 	fi
 	rm -rf /etc/haproxy/haproxy.cfg
-	sed -i 's/example.com/v2ray/g' /root/vless/haproxy.cfg
-	cp /root/vless/haproxy.cfg /etc/haproxy/haproxy.cfg
+	
+	cp /opt/vless/haproxy.cfg /etc/haproxy/haproxy.cfg
 }
 
 bbr_install() {
@@ -139,16 +146,16 @@ bbr_install() {
 }
 
 delete() {
-	rm -rf /root/vless
-	rm -rf /root/vless.zip
+#	rm -rf /opt/vless*
 	rm -rf /root/html-p.zip
 	rm -rf /root/432
+	rm -rf /root/vless.zip
+#	rm -rf /root/432
 }
 
 html_install() {
-	unzip html-p.zip
 	rm -rf /var/www/html/*
-	cp -r /root/432/* /var/www/html/
+	cp -r /opt/vless/432/* /var/www/html/
 }
 
 uprint() {
@@ -175,6 +182,9 @@ delete_all() {
 	read -p "将会删除证书文件以外的其它科学上网程序，请确定(y/n):" yn
 	case "$yn" in
 	[yY])
+		apt remove haproxy -y &>/dev/null
+		systemctl stop trojan &>/dev/null
+		systemctl stop haproxy &>/dev/null
 		rm -rf /etc/v2ray/config.json &>/dev/null
 		rm -rf /etc/trojan &>/dev/null
 		rm -rf /usr/bin/v2ray &>/dev/null
@@ -183,12 +193,19 @@ delete_all() {
 		rm -rf /etc/init.d/trojan &>/dev/null
 		rm -rf /etc/systemd/system/trojan.service &>/dev/null
 		rm -rf /etc/systemd/system/v2ray.service &>/dev/null
+		rm -rf /etc/systemd/system/haproxy.service &>/dev/null
+		rm -rf /etc/haproxy/haproxy.cfg &>/dev/null
+		rm -rf /etc/nginx/conf.d/*
+		rm -rf /root/go*
+		rm -rf /opt/v2ray
+		rm -rf /opt/v2ctl
+		rm -rf /opt/geo*
 		;;
 	[nN])
 		exit
 		;;
 	*)
-		echo -e "${red_font_prefix}error${Font_color_suffix}"
+		echo -e "${Red_font_prefix}error${Font_color_suffix}"
 		exit
 	esac
 }
@@ -203,7 +220,7 @@ echo && echo -e "          科学上网一键安装脚本：
              ${Green_font_prefix}3、${Font_color_suffix}vmess+ws+tls+web
              ${Green_font_prefix}4、${Font_color_suffix}vmess+tcp+tls+web
              ${Green_font_prefix}5、${Font_color_suffix}trojan
-             ${Green_font_prefix}6、${Font_color_suffix}bbr install           
+             ${Green_font_prefix}6、${Font_color_suffix}bbr install(bbr安装完成且重启vps后请执行 ./tcp.sh 以启动bbr服务)
              ${Green_font_prefix}7、${Font_color_suffix}delete all
              ${Green_font_prefix}8、${Font_color_suffix}exit
       ——————————————————————————————————
@@ -217,12 +234,15 @@ case "$choice" in
 	install_all
 	v2ray_install
 	vless_download
-	change_json
+#	change_json
 	acme_install
 	nginx_install
-	cp /root/vless/wsv.json /etc/v2ray/config.json
-	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
+	cp /opt/vless/wsv.json /etc/v2ray/config.json
+	cp /opt/vless/ws.conf /etc/nginx/conf.d/ws.conf
+	sed -ri '10s/.*/              "id":"'$uuid1'",/' /etc/v2ray/config.json
+	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/ws.conf
 	html_install
+	systemctl daemon-reload
 	systemctl restart v2ray
 	systemctl restart nginx
 	delete
@@ -234,13 +254,17 @@ case "$choice" in
 	install_all
 	v2ray_install
 	vless_download
-	change_json
+#	change_json
 	acme_install
 	nginx_install
 	haproxy_install
-	cp /root/vless/tcpv.json /etc/v2ray/config.json
-	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	cp /opt/vless/tcpv.json /etc/v2ray/config.json
+	cp /opt/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	sed -i 's/example.com/v2ray/g' /etc/haproxy/haproxy.cfg
+	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /etc/v2ray/config.json
+	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/tcp.conf
 	html_install
+	systemctl daemon-reload
 	systemctl restart v2ray
 	systemctl restart nginx
 	systemctl restart haproxy
@@ -251,12 +275,15 @@ case "$choice" in
 3)
 	install_all
 	v2ray_install
-	change_json
+#	change_json
 	acme_install
 	nginx_install
-	cp /root/vless/ws.json /etc/v2ray/config.json
-	cp /root/vless/ws.conf /etc/nginx/conf.d/ws.conf
+	cp /opt/vless/ws.json /etc/v2ray/config.json
+	cp /opt/vless/ws.conf /etc/nginx/conf.d/ws.conf
+	sed -ri '10s/.*/            "id":"'$uuid1'",/' /etc/v2ray/config.json
+	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/ws.conf
 	html_install
+	systemctl daemon-reload
 	systemctl restart v2ray
 	systemctl restart nginx
 	clear
@@ -267,13 +294,17 @@ case "$choice" in
 4)
 	install_all
 	v2ray_install
-	change_json
+#	change_json
 	acme_install
 	nginx_install
 	haproxy_install
-	cp /root/vless/tcp.json /etc/v2ray/config.json
-	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	cp /opt/vless/tcp.json /etc/v2ray/config.json
+	cp /opt/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	sed -i 's/example.com/v2ray/g' /etc/haproxy/haproxy.cfg
+	sed -ri '10s/.*/                        "id":"'$uuid1'"/' /etc/v2ray/config.json
+	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/tcp.conf
 	html_install
+	systemctl daemon-reload
 	systemctl restart v2ray
 	systemctl restart nginx
 	systemctl restart haproxy
@@ -284,12 +315,15 @@ case "$choice" in
 5)
 	install_all
 	trojan_install
-	change_json
+#	change_json
 	acme_install
 	nginx_install
-	cp /root/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	cp /opt/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
+	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/tcp.conf
+	sed -i 's/passwd/'$password1'/g' /etc/trojan/trojan.json
 	html_install
 	systemctl restart nginx
+	systemctl daemon-reload
 	systemctl restart trojan
 	delete
 	clear
