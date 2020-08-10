@@ -234,7 +234,7 @@ case "$choice" in
 1)
 	install_all
 	v2ray_install
-	vless_download
+#	vless_download
 #	change_json
 	acme_install
 	nginx_install
@@ -254,7 +254,7 @@ case "$choice" in
 2)
 	install_all
 	v2ray_install
-	vless_download
+#	vless_download
 #	change_json
 	acme_install
 	nginx_install
