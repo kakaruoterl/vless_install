@@ -282,7 +282,7 @@ case "$choice" in
 	nginx_install
 	cp /opt/vless/ws.json /etc/v2ray/config.json
 	cp /opt/vless/ws.conf /etc/nginx/conf.d/ws.conf
-	sed -ri '10s/.*/            "id":"'$uuid1'",/' /etc/v2ray/config.json
+	sed -ri '10s/.*/            "id":"'$uuid1'"/' /etc/v2ray/config.json
 	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/ws.conf
 	html_install
 	systemctl daemon-reload
