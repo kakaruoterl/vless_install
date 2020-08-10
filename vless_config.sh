@@ -164,7 +164,8 @@ uprint() {
 }
 
 pathprint() {
-	echo -e "${Green_font_prefix}ws路径：/ray${Font_color_suffix}"
+	echo -e "${Green_font_prefix}ws路径:/ray${Font_color_suffix}"
+	echo -e "${Green_font_prefix}alterId:0${Font_color_suffix}"
 }
 
 nginx_install() {
@@ -271,6 +272,7 @@ case "$choice" in
 	delete
 	clear
 	uprint
+	echo -e "${Green_font_prefix}alterId:0${Font_color_suffix}"
 	;;
 3)
 	install_all
@@ -311,6 +313,7 @@ case "$choice" in
 	delete
 	clear
 	uprint
+	echo -e "${Green_font_prefix}alterId:0${Font_color_suffix}"
 	;;
 5)
 	install_all
