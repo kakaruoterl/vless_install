@@ -125,10 +125,17 @@ acme_install() {
 	fi
 	mkdir /etc/ssl/private
 	cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem
+	echo "51 0 * * * ~/.acme.sh/acme.sh --installcert -d ${dname} --ecc --fullchain-file /etc/v2ray/v2ray.crt --key-file /etc/v2ray/v2ray.key && sleep 1 && cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem && systemctl restart nginx && systemctl restart haproxy" >> /var/spool/cron/crontabs/root
 }
 #vless_ws() {
 #	cp ws.json /etc/v2ray/config.json
 #}
+
+acme_upgrade() {
+	~/.acme.sh/acme.sh --renew -d $dname --force --ecc
+	~/.acme.sh/acme.sh --installcert -d $dname --ecc --fullchain-file /etc/v2ray/v2ray.crt --key-file /etc/v2ray/v2ray.key
+	cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem
+}
 
 haproxy_install() {
 	if [ ! -f /etc/haproxy/haproxy.cfg ];then
@@ -223,7 +230,8 @@ echo && echo -e "          科学上网一键安装脚本：
              ${Green_font_prefix}5、${Font_color_suffix}trojan
              ${Green_font_prefix}6、${Font_color_suffix}bbr install(bbr安装完成且重启vps后请执行 ./tcp.sh 以启动bbr服务)
              ${Green_font_prefix}7、${Font_color_suffix}delete all
-             ${Green_font_prefix}8、${Font_color_suffix}exit
+             ${Green_font_prefix}8、${Font_color_suffix}手动更新证书(仅支持使用此脚本安装的证书)
+			 ${Green_font_prefix}9、${Font_color_suffix}exit
       ——————————————————————————————————
          ${Green_font_prefix}该脚本会自动安装伪装网站${Font_color_suffix}"
 #read -p "请输入您绑定的域名(务必输入正确！)": dname
@@ -339,6 +347,9 @@ case "$choice" in
 	delete_all
 	;;
 8)
+	acme_upgrade
+	;;	
+9)
 	exit
 	;;
 *)
