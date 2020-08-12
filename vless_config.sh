@@ -128,7 +128,7 @@ acme_install() {
 	fi
 	mkdir /etc/ssl/private
 	cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem
-	echo "59 1 31 * * bash /opt/vless/update.sh" >> /var/spool/cron/crontabs/root
+	echo "59 1 31 * * bash /opt/vless/acupdate.sh" >> /var/spool/cron/crontabs/root
 }
 #vless_ws() {
 #	cp ws.json /etc/v2ray/config.json
