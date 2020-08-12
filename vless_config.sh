@@ -16,6 +16,8 @@ mv /root/tcpv.json /opt/vless &>/dev/null
 mv /root/hap* /opt/vless &>/dev/null
 mv /root/trojan.json /opt/vless/ &>/dev/null
 mv /root/trojan.service /opt/vless/ &>/dev/null
+mv /root/acupdate.sh /opt/vless/ &>/dev/null
+chmod +x /opt/vless/acupdate.sh
 mv /root/432 /opt/vless
 
 v2ray_install() {
@@ -68,6 +70,7 @@ install_all() {
 		continue
 	fi
 	done
+	sed -i 's/example.com/'$dname'/g' /opt/vless/acupdate.sh
 }
 
 
@@ -125,7 +128,7 @@ acme_install() {
 	fi
 	mkdir /etc/ssl/private
 	cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem
-	echo "51 0 * * * ~/.acme.sh/acme.sh --installcert -d ${dname} --ecc --fullchain-file /etc/v2ray/v2ray.crt --key-file /etc/v2ray/v2ray.key && sleep 1 && cat /etc/v2ray/v2ray.crt /etc/v2ray/v2ray.key > /etc/ssl/private/v2ray.pem && systemctl restart nginx && systemctl restart haproxy" >> /var/spool/cron/crontabs/root
+	echo "59 1 31 * * bash /opt/vless/update.sh" >> /var/spool/cron/crontabs/root
 }
 #vless_ws() {
 #	cp ws.json /etc/v2ray/config.json
