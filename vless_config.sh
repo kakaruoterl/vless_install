@@ -347,8 +347,12 @@ case "$choice" in
 	delete_all
 	;;
 8)
+    systemctl stop nginx
+    systemctl stop haproxy
     install_all
-	acme_upgrade
+    acme_upgrade
+    systemctl start nginx
+    systemctl start haproxy
 	;;	
 9)
 	exit
