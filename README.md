@@ -25,3 +25,5 @@ unzip vless.zip && chmod +x vless_config.sh && ./vless_config.sh
 2、添加证书手动更新：如果使用本脚本安装证书，或者使用acme安装的ecc证书可以使用手动更新证书
 
 3、证书使用时间为90天，没必要频繁更新
+
+4、如需升级脚本，请在删除原脚本后重新下载脚本！
