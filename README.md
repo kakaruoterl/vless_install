@@ -27,3 +27,5 @@ unzip vless.zip && chmod +x vless_config.sh && ./vless_config.sh
 3、证书使用时间为90天，没必要频繁更新
 
 4、如需升级脚本，请在删除原脚本后重新下载脚本！
+
+水平有限，时间有限，不能保证所有人的所有需求，深感抱歉！！！
