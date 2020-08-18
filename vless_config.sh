@@ -19,15 +19,23 @@ mv /root/trojan.service /opt/vless/ &>/dev/null
 mv /root/acupdate.sh /opt/vless/ &>/dev/null
 chmod +x /opt/vless/acupdate.sh
 mv /root/432 /opt/vless
+mkdir /etc/v2ray &>/dev/null
 
 v2ray_install() {
 	if [ ! -d /usr/bin/v2ray ];then
-		timedatectl set-timezone Asia/Shanghai 
-		wget https://install.direct/go.sh
-		chmod +x go.sh
-		./go.sh &>/dev/null
+		#timedatectl set-timezone Asia/Shanghai 
+		#wget https://install.direct/go.sh
+		#chmod +x go.sh
+		#./go.sh &>/dev/null
+		apt install curl -y
+		curl -O https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh
+		curl -O https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-dat-release.sh
+		chmod +x install-release.sh install-dat-release.sh
+		bash install-dat-release.sh
+		bash install-release.sh
 	fi
 	rm -rf /etc/v2ray/config.json
+	rm -rf /usr/local/etc/v2ray/config.json
 	uuid1=`cat /proc/sys/kernel/random/uuid` &>/dev/null
 }
 
@@ -193,9 +201,12 @@ delete_all() {
 	read -p "将会删除证书文件以外的其它科学上网程序，请确定(y/n):" yn
 	case "$yn" in
 	[yY])
-		apt remove haproxy -y &>/dev/null
-		systemctl stop trojan &>/dev/null
 		systemctl stop haproxy &>/dev/null
+		systemctl disable haproxy &>/dev/null
+		apt remove haproxy -y &>/dev/null
+		apt autoremove haproxy -y &>/dev/null
+		systemctl stop trojan &>/dev/null
+		#systemctl stop haproxy &>/dev/null
 		rm -rf /etc/v2ray/config.json &>/dev/null
 		rm -rf /etc/trojan &>/dev/null
 		rm -rf /usr/bin/v2ray &>/dev/null
@@ -249,9 +260,9 @@ case "$choice" in
 #	change_json
 	acme_install
 	nginx_install
-	cp /opt/vless/wsv.json /etc/v2ray/config.json
+	cp /opt/vless/wsv.json /usr/local/etc/v2ray/config.json
 	cp /opt/vless/ws.conf /etc/nginx/conf.d/ws.conf
-	sed -ri '10s/.*/              "id":"'$uuid1'",/' /etc/v2ray/config.json
+	sed -ri '10s/.*/              "id":"'$uuid1'",/' /usr/local/etc/v2ray/config.json
 	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/ws.conf
 	html_install
 	systemctl daemon-reload
@@ -270,10 +281,10 @@ case "$choice" in
 	acme_install
 	nginx_install
 	haproxy_install
-	cp /opt/vless/tcpv.json /etc/v2ray/config.json
+	cp /opt/vless/tcpv.json /usr/local/etc/v2ray/config.json
 	cp /opt/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
 	sed -i 's/example.com/v2ray/g' /etc/haproxy/haproxy.cfg
-	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /etc/v2ray/config.json
+	sed -ri '10s/.*/                        "id":"'$uuid1'",/' /usr/local/etc/v2ray/config.json
 	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/tcp.conf
 	html_install
 	systemctl daemon-reload
@@ -291,9 +302,9 @@ case "$choice" in
 #	change_json
 	acme_install
 	nginx_install
-	cp /opt/vless/ws.json /etc/v2ray/config.json
+	cp /opt/vless/ws.json /usr/local/etc/v2ray/config.json
 	cp /opt/vless/ws.conf /etc/nginx/conf.d/ws.conf
-	sed -ri '10s/.*/            "id":"'$uuid1'"/' /etc/v2ray/config.json
+	sed -ri '10s/.*/            "id":"'$uuid1'"/' /usr/local/etc/v2ray/config.json
 	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/ws.conf
 	html_install
 	systemctl daemon-reload
@@ -311,10 +322,10 @@ case "$choice" in
 	acme_install
 	nginx_install
 	haproxy_install
-	cp /opt/vless/tcp.json /etc/v2ray/config.json
+	cp /opt/vless/tcp.json usr/local/etc/v2ray/config.json
 	cp /opt/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
 	sed -i 's/example.com/v2ray/g' /etc/haproxy/haproxy.cfg
-	sed -ri '10s/.*/                        "id":"'$uuid1'"/' /etc/v2ray/config.json
+	sed -ri '10s/.*/                        "id":"'$uuid1'"/' /usr/local/etc/v2ray/config.json
 	sed -i 's/example.com/'$dname'/g' /etc/nginx/conf.d/tcp.conf
 	html_install
 	systemctl daemon-reload
