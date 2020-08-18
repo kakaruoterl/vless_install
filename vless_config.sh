@@ -223,6 +223,7 @@ delete_all() {
 		rm -rf /etc/systemd/system/haproxy.service &>/dev/null
 		rm -rf /etc/haproxy/haproxy.cfg &>/dev/null
 		rm -rf /etc/nginx/conf.d/*
+		rm -rf /root/install-*
 		rm -rf /root/go*
 		rm -rf /opt/v2ray
 		rm -rf /opt/v2ctl
