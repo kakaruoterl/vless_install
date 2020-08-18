@@ -29,3 +29,5 @@ unzip vless.zip && chmod +x vless_config.sh && ./vless_config.sh
 4、如需升级脚本，请在删除原脚本后重新下载脚本！
 
 初衷为自己使用，水平有限，时间有限，不能保证所有人的所有需求，深感抱歉！！！
+
+最近没时间，vless的fallback暂时没时间去测试添加，所以如需要此功能的需自行配置，谢谢
