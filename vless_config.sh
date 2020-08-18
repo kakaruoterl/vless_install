@@ -211,10 +211,15 @@ delete_all() {
 		rm -rf /etc/trojan &>/dev/null
 		rm -rf /usr/bin/v2ray &>/dev/null
 		rm -rf /usr/bin/trojan &>/dev/null
+		rm -rf /usr/local/share/v2ray &>/dev/null
+		rm -rf /usr/local/bin/v2ray &>/dev/null
+		rm -rf /usr/local/bin/v2ctl &>/dev/null
+		rm -rf /usr/local/etc/v2ray &>/dev/null
 		rm -rf /etc/init.d/v2ray &>/dev/null
 		rm -rf /etc/init.d/trojan &>/dev/null
 		rm -rf /etc/systemd/system/trojan.service &>/dev/null
 		rm -rf /etc/systemd/system/v2ray.service &>/dev/null
+		rm -rf /etc/systemd/system/v2ray@.service &>/dev/null
 		rm -rf /etc/systemd/system/haproxy.service &>/dev/null
 		rm -rf /etc/haproxy/haproxy.cfg &>/dev/null
 		rm -rf /etc/nginx/conf.d/*
@@ -322,7 +327,7 @@ case "$choice" in
 	acme_install
 	nginx_install
 	haproxy_install
-	cp /opt/vless/tcp.json usr/local/etc/v2ray/config.json
+	cp /opt/vless/tcp.json /usr/local/etc/v2ray/config.json
 	cp /opt/vless/tcp.conf /etc/nginx/conf.d/tcp.conf
 	sed -i 's/example.com/v2ray/g' /etc/haproxy/haproxy.cfg
 	sed -ri '10s/.*/                        "id":"'$uuid1'"/' /usr/local/etc/v2ray/config.json
