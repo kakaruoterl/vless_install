@@ -207,6 +207,8 @@ delete_all() {
 		apt autoremove haproxy -y &>/dev/null
 		systemctl stop trojan &>/dev/null
 		#systemctl stop haproxy &>/dev/null
+		bash install-release.sh --remove
+		rm -rf /usr/local/share/v2ray/geo* &>/dev/null
 		rm -rf /etc/v2ray/config.json &>/dev/null
 		rm -rf /etc/trojan &>/dev/null
 		rm -rf /usr/bin/v2ray &>/dev/null
